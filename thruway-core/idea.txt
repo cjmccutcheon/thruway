@@ -12,19 +12,31 @@ Node Classes:
   --States--
   Pattern     Permutation Execution
   ----------- ----------- -----------
-  PaI PaT PaE PeI PeT PeE ExI ExT ExE - Unpublished: Initial unpublished state for new Node Instances (Purple). Cannot be evaluated.
-  PaI PaT PaE PeI PeT PeE ExI ExT ExE - New: Initial published state for new Node Instances (light grey). Has never evaluated.
-  PaI         PeI         ExI         - Unmet: Ingress has not found any acceptable condition (orange/yellow).
-  PaI         PeI         ExI         - Met: Ingress found one or more acceptable conditions(green).
-                  PeT         ExT     - Failure: Transform encountered functional error code (orange/yellow).
-                  PeT         ExT     - Success: Transform finished without Error or Failure (green).
-                      PeE         ExE - Delivered: Egress finished without Error (green).
-  PaI     PaE                         - Complete: Transform or Egress in Pattern ran last without Error (Blue).  
-                                            Showing anything other than this or an Error at the Pattern level 
-                                            would just be confusing.
-  PaI PaT PaE PeI PeT PeE ExI ExT ExE - Error: Node Instance encountered Thruway system error (deep red).
-                                            This is an emergency condition, which is why it is shown at
-                                            the Pattern level.
+  PaI PaT PaE PeI PeT PeE ExI ExT ExE - Unpublished: Initial unpublished state 
+   .   .   .   .   .   .   .   .   .       for new Node Instances (Purple). 
+   .   .   .   .   .   .   .   .   .       Cannot be evaluated.
+  PaI PaT PaE PeI PeT PeE ExI ExT ExE - New: Initial published state for new 
+   .   .   .   .   .   .   .   .   .      Node Instances (light grey). Has never
+   .   .   .   .   .   .   .   .   .      evaluated.
+  PaI --- --- PeI --- --- ExI --- --- - Unmet: Ingress has not found any 
+   .   .   .   .   .   .   .   .   .      acceptable condition (orange/yellow).
+  PaI --- --- PeI --- --- ExI --- --- - Met: Ingress found one or more 
+   .   .   .   .       .   .   .   .      acceptable conditions(green).
+  --- --- --- --- PeT --- --- ExT --- - Failure: Transform encountered 
+   .   .   .   .   .   .   .   .   .      functional error code (orange/yellow).
+  --- --- --- --- PeT --- --- ExT --- - Success: Transform finished without 
+   .   .   .   .   .   .   .   .   .      Error or Failure (green).
+  --- --- --- --- --- PeE --- --- ExE - Delivered: Egress finished without Error
+   .   .   .   .   .   .   .   .   .      (green).
+  PaI --- PaE --- --- --- --- --- --- - Complete: Transform or Egress in Pattern
+   .   .   .   .   .   .   .   .   .      ran last without Error (Blue). 
+   .   .   .   .   .   .   .   .   .      Showing anything other than this or 
+   .   .   .   .   .   .   .   .   .      an Error at the Pattern level  would
+   .   .   .   .   .   .   .   .   .      just be confusing.
+  PaI PaT PaE PeI PeT PeE ExI ExT ExE - Error: Node Instance encountered Thruway
+   .   .   .   .   .   .   .   .   .      system error (deep red). This is an 
+   .   .   .   .   .   .   .   .   .      emergency condition, which is why it
+   .   .   .   .   .   .   .   .   .      is shown at the Pattern level.
 
   --Types--
   Transform:
@@ -276,6 +288,7 @@ Internal Mechanics:
             must drop to the bottom of the Transform Priority List.
         Run Egresses:  Egresses whose upstream nodes have completed, failed or
             have been skipped can now run.
+  
   Live Monitoring Webapp Module: A method of listening in on Executions in situ.
       Either a different section of the webapp requiring explicit privileges, or
       a different standalone executable run by a user.  Design note: The goal of
@@ -283,3 +296,4 @@ Internal Mechanics:
       the master be the chokepoint through which all those data flow.  If the 
       webapp controls it, then the privilege will be restricted to those the
       admins approve, in order to reduce load.
+
