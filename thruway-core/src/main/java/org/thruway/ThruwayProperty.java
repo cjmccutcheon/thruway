@@ -46,6 +46,9 @@ public class ThruwayProperty implements Hashable
     // like '-' available for DSLs, and this should get characters LAST.
     // I do expect non-english characters to be added at some time, but don't
     // know how to do it yet.
+    //
+    // Definitely disallowed char classes:
+    //    [${}]      -- Because of "${foo}" interpolation notation
     static final public String ALLOWED_KEY_REGEX = "[A-Za-z0-9_]*";
 
 
@@ -101,13 +104,13 @@ public class ThruwayProperty implements Hashable
         return this.userKey;
     }
 
-    void setValue(String value)
+    void setValue(String newValue)
     {
-        if (value != null)
+        if (this.value != null)
         {
             throw new IllegalStateException("Value already set");
         }
-        this.value = value;
+        this.value = newValue;
     }
 
     public String hashString()
