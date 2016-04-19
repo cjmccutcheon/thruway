@@ -1,0 +1,285 @@
+Node Classes:
+  Node Classes can set Execution Properties.  
+  All set Execution Properties are propagated downstream.  
+  Execution Properties cannot be reassigned.  
+  Attempts to reassign Execution Properties will be caught when the Node 
+      Instance changes (an upstream check will be performed).
+  The Execution Property  names set by a Node Instance can be changed (but 
+      common defaults would be provided).
+  Also Execution Properties can be set to "always discard", making them 
+      unavailable to downstream instances.
+
+  --States--
+  Pattern     Permutation Execution
+  ----------- ----------- -----------
+  PaI PaT PaE PeI PeT PeE ExI ExT ExE - Unpublished: Initial unpublished state for new Node Instances (Purple). Cannot be evaluated.
+  PaI PaT PaE PeI PeT PeE ExI ExT ExE - New: Initial published state for new Node Instances (light grey). Has never evaluated.
+  PaI         PeI         ExI         - Unmet: Ingress has not found any acceptable condition (orange/yellow).
+  PaI         PeI         ExI         - Met: Ingress found one or more acceptable conditions(green).
+                  PeT         ExT     - Failure: Transform encountered functional error code (orange/yellow).
+                  PeT         ExT     - Success: Transform finished without Error or Failure (green).
+                      PeE         ExE - Delivered: Egress finished without Error (green).
+  PaI     PaE                         - Complete: Transform or Egress in Pattern ran last without Error (Blue).  
+                                            Showing anything other than this or an Error at the Pattern level 
+                                            would just be confusing.
+  PaI PaT PaE PeI PeT PeE ExI ExT ExE - Error: Node Instance encountered Thruway system error (deep red).
+                                            This is an emergency condition, which is why it is shown at
+                                            the Pattern level.
+
+  --Types--
+  Transform:
+    Take input resources (defined in the system, or probably defined internally
+        even if that's not what we want) and output resources after doing 
+        processing.
+    Processing will be performed by a JVM.
+  
+  Ingress:
+    Actually an event filter, an item that controls when downstream Node 
+        Instances can be fired
+    An Ingress can have another Ingress upstream, as a filter.
+    An Ingress can have a transform's output upstream.
+    A passed filter would be represented by a persistent token distributed to 
+        the downstream Transform
+    The difference between an Ingress and a transform is that only a transform 
+        would change the state of something.
+    An Ingress merely notes that something is in a particular state.
+    Ingresses gather information on a system according to an internally set 
+        polling rate, distributed across the period (suggested 5 minutes).
+    If the Ingress determines that it found a trigger, that trigger will be 
+        passed on, along with the information it gathered.
+    If the Ingress has only one possible output (say Mercurial-Branch has the 
+        HGBranch property hardcoded) then only one particular Permutation can 
+        result
+    If the Ingress has more that one possible output (say Mercurial-Branch is 
+        looking at a list of branches), then multiple Permutation will be 
+        dynamically controlled by the Ingress.
+  
+    --Types--
+      Union: A resource that allows 1 of many upstream Ingresses to be passed 
+          downstream.
+      Arbitrary: A generic Ingress that allow a limitation to be user defined.
+      Workspace: Assign a space where Transforms can write files.  Workspaces 
+          are persistent until reclamation.
+      Agent: Find an agent service that is (a.) online and (b.) has the agent 
+          software installed.
+      Map: Assures that a map key is found, sets the corresponding map value to
+          an Execution Property. Provides an opportunity to set more Execution 
+          Properties based on observed states.
+      Cron: Run at a specific time.
+      Grep: Regex present in file in the workspace or a specified directory
+      Find: Files are found in the workspace or a specified directory
+      UserInvocation: A (qualified) service user flags a Met state for the
+          Ingress.  Allows for users to manually approve or ask for actions.
+      Mercurial-Tag: HG tag is newly available or has been moved
+      Mercurial-Branch: HG branch is newly available or new changeset has been 
+          committed.
+      Mercurial-MultiRepo-Tag: HG tag is newly available or has been moved on 
+          one of multiple repos.
+      Mercurial-MultiRepo-Branch: HG branch is newly available or new changeset
+          has been committed on one of multiple repos.
+      Maven-Release: Release package is available for download
+      Maven-Snapshot: Snapshot package is available for download
+      Maven-Snapshot-Update: Snapshot package is newly available, or has been 
+          updated.
+      Database-Instance: Database is available
+      Database-Database: Database schema is available
+      Database-Table: Table is available in a schema
+      Weblogic-Domain: WL domain is available
+      WebSphere-Server: WS server is available
+      WebSphere-Profile: WS profile is available
+
+  Egress:
+      A Node Class that represents an explicit consumer of an output state.
+      The Egress represents the end-cap of a Pattern/Permutation/Execution, and
+          represents what reports are sent, and to where.
+      While Transforms can perform that functionality, Egresses are 
+          easy-to-configure utilities meant to serve their correct purpose.
+      (But yes, honestly, they serve to round out the design, too.)
+      --Types--
+        Email: Send text to email addresses
+        Web-Page: Send text to static, served webpage. 
+        JUnit-Web-Page: Render JUnit XML result content to web page.
+
+Terms:
+  Agent: A processor that is part of the service
+  Master: The Agent responsible for distributing Node Instances to Agents.
+  Node Class: The definition of what, when executed, becomes a Node Instance.  
+      When designing a Pattern, all pieces that are selected to go in are Node 
+      Classes.  The pieces that have been inserted into a Pattern are Node 
+      Instances.
+  Node Instance: What results when a Node Class is put into a Pattern.
+  Node Execution: What results when a Node Instance is executed.
+  Execution: one related collection of Node iterations
+  Execution Property (pl. Properties): A field that can be set once, that 
+      propagates to all downstream Node Instances.  A Node Class has a set 
+      number of fields that it can set, but the identifiers for those fields 
+      can be altered in a Node Instance.
+  Permutation (pl. Permutations): What results from the execution of a fully-
+      static interconnection of Node Instances, or what results from the 
+      execution of an interconnection with at least one dynamic node.  Formally,
+      a Permutation is the superset of all Executions, uniquely identified by 
+      wholly-identical Permutation Property values.
+  Permutation Property (pl. Properties): An Execution Property that is used 
+      for the identification of a Permutation.  Can be thought of as "primary 
+      key columns", and the Execution Properties as "non-key columns".
+      Permutation Properties are meant to be selected as identifying traits
+      of an Execution.  An identifier of a project being built is likely 
+      always a Permutation Property.  The hostname of the agent is almost
+      always not (since agents are expected to be fungible as much as possible).
+      These properties can only be set before a Transform has been executed,
+      otherwise this would mean that the Permutation ID would be altered
+      during processing, leading to uncertainty in the identity of the 
+      Permutation, and throwing a wrench in the determinism of Permuation
+      lookups..
+  Pattern (pl. Patterns): The interconnection of Node Classes that can 
+      result in 1 or more Permutation, after the Ingresses gather values and
+      apply them to Execution Properties. Since these identifying Execution
+      Properties are not likely to be set in one atomic operation, a
+      provision will be made that states that all ingresses that come before
+      possible that
+  Pattern Property (pl. Properties): Any property that is a Permutation Property
+      but is also set to a constant.
+
+
+
+Internal Mechanics:
+  Transform Priority List: 
+    A Round robin list of all transforms, with ascending order of last-time-
+      completed (it's a round-robin list).  Those higher on the list have first 
+      crack at their upstream Ingress tokens, at which point they go to the 
+      bottom.
+    
+  Node Depth: Internal marker of node level for one Permutation.  The highest 
+      node in the Permutation is depth 0, and the lowest is depth N.  
+      Evaluations are performed in order of depth, globally.
+
+  Node classes:
+    Ingresses can contain a chain of Ingresses
+    Transforms can contain a chain of transforms
+    Egresses can contain an array of egresses (all run at the same time) 
+    These kinds of nodes are "classes"
+
+  Durability Schemes:
+    None: No persistence is attempted, and the running state of the ecosystem 
+        is kept in memory.  Either the ecosystem is robust, or the user 
+        is expected to write robust Patterns that handle all fault states.  
+        Does not allow fail-over.  Obviously not recommended.
+    File: A basic persistence scheme where the state of the ecosystem is
+        written to file periodically.  The persistence files have to be
+        up-to-date before a transform can be run.  Ready, In-Progress, and 
+        Finished states are kept in separate files, and a list is culled
+        based on the contents of the other lists.  This scheme attempts to be 
+        very robust, at the cost of performance.  The user is advised that
+        this scheme limits scalability. Allows fail-over if the files are
+        accessible to the secondary master.  Makes sense only as a 
+        first-choice; the user is expected to plan for a Database scheme in
+        the future.
+    Database: Use an ACID-compliant database via Hibernate.  The master takes
+        all responsibility for keeping the database in the state necessary
+        for clean restarts, and clean fail-overs.  The recommended course
+        for all users. 
+
+  Pattern Version Control:  To defend against unwise user behavior, Patterns 
+      will store lineage, and will never be deletable (you can, however, change 
+      the visibility of a pattern, but that setting is always mutable).  Instead
+      of copying, "forking" will be available, implying that a record will be 
+      kept of the event.
+
+  Fields:
+    Fields are key/value pairs that are the medium in which values are 
+        transferred between nodes. A set of fields is provided by each Ingress,
+        with the intent that the Ingress will fill those fields upon 
+        completion of its task.  A few properties of a field are important to 
+        note.:
+          1.) The value can only be set once, and depending on the field, 
+              may have to be set when designing the pattern.  
+          2.) The key can be altered to a user-specific key when designing a 
+              pattern, to prevent collision.  For example, if you need 2 
+              Ingresses to watch two different repos for two different tags, 
+              if you use the same Ingress class to do this task (a reasonable 
+              assumption), it will try to provide the same field in both 
+              Ingresses with the same default key.  This would cause a collision
+              in information.  
+    Visibility Fields: These fields control various aspects of information flow
+        between Patterns, the master, and non-admins.  They are:
+        PUBLISHED, Pattern-level, preset, boolean: Sets whether the Engine Loop
+            Can see the Pattern nodes for evaluation. Default "false".
+        HIDDEN, Pattern-level, preset, boolean: Controls whether Users can see
+            this in a casual context. Note: since Patterns are never destroyed,
+            and cloned/edited Patterns keep a reference to the Pattern they
+            came from, no Pattern that is a parent can be perfectly hidden.
+            Default "false".
+        BURIED, Pattern-level, preset, boolean: Controls whether Admins can
+            see the Pattern in a casual context.  Used for Patterns that are
+            dead and done with such that the Admins do not even care to know
+            about it.  Implies PUBLISHED=false.  Again, the same Note as for 
+            BURIED is still true.
+    Pattern Run Count ("PATTERN_RUN_COUNT"), integer: Starting at 0, incremented
+        by 1 for each Execution.  Useful for tracking the importance of a 
+        Pattern.
+    Permutation Run Count ("PERM_RUN_COUNT"), integer: Starting at 0, 
+        incremented by 1 for each Execution.  Useful for tracking the importance
+        of a Permutation.
+    Pattern Updated ("PATTERN_UPDATED"), datetime, autoset: Date time of the 
+        last definition update of a Pattern.
+    Pattern ID ("PATTERN_ID"), hash, autoset: A unique identifer assigned by 
+        the base system to all Patterns.  Will be a hash of all Pattern 
+        Properties + a representation (such as JSON) of the node graph + 
+        PATTERN_UPDATED.
+    Permutation ID ("PERM_ID"), hash, autoset: A hash of all the Permutation 
+        Properties + the Pattern ID.
+    Execution ID ("EXEC_ID"), hash, autoset: A hash of the permutation id and 
+        the starting timestamp
+    Permutation Descripiton ("PERM_DESC"), string, user set: A user-defined 
+        text field assigned to a Permutation.  Can be composed of whatever is 
+        desired, but user is advised to include only literals and permutation 
+        properties.  
+    Execution Descripiton ("EXEC_DESC"), string, user set: A user-defined text 
+        field assigned to an execution.  Can be composed of whatever is desired
+        , but user is advised to include only literals, permutation properties
+        , and execution properties.
+    Execution Timestamp ("EXEC_TIMESTAMP"), datetime, autoset: Timestamp set 
+        when the first node is executed.
+    Permutation Timestamp ("PERM_TIMESTAMP"), datetime, autoset: Timestamp set 
+        when the PERM_ID is set.
+    Pattern Replacement fields ("PATTERN_CHILD_OF" and "PATTERN_CHILDREN") 
+        array of hashes, autoset: Fields that allow for basic traversal of 
+        change history.  The last line of defense against user misbehavior.
+
+  Aliases: A functionality that allows users to assign labels to different
+      patterns (against their PERM_ID).  A field is not used for this
+      because the descriptive quality of an alias would be lost if it was a 
+      static field.
+
+  Reporting Webservice:  All agents will serve webpages (generally to display
+      logging text and other reports).  The master will also serve webpages
+      that link to those agent-hosted webpages.  Egresses will be provided that
+      do the work of publishing resources and putting links on the master to 
+      get there. Since logs will not be automatically stored on the master 
+      (unscalable), users are advised to arrange for off-site log exports 
+      (using Egresses) for all auditable outputs.
+
+  Off-Hand Naming (low priorty): have a name generator assign values to other
+      name fields for Patterns and Permutations (in step with PATTERN_ID and 
+      PERM_ID changes) so that failing all else, there is a pronouncible name
+      available for developers to use when referring to misbehavior in the
+      system (say, when the description fields are badly defined).
+  
+  Engine Loop:
+      The driver of the system will be a loop in these parts:
+        Evaluate Ingresses: Ingresses evaluate and publish 0 or more tokens
+        Evaluate Transforms: In order of the Transform Priority List, allow
+            downstream Transforms to consume tokens from Ingresses.
+        Run satisfied transforms: Transforms with their required tokens
+            are allowed to run.
+        Record newly completed Transforms: Transforms who have recently finished
+            must drop to the bottom of the Transform Priority List.
+        Run Egresses:  Egresses whose upstream nodes have completed, failed or
+            have been skipped can now run.
+  Live Monitoring Webapp Module: A method of listening in on Executions in situ.
+      Either a different section of the webapp requiring explicit privileges, or
+      a different standalone executable run by a user.  Design note: The goal of
+      this is to sate users' need for obsessive monitoring while avoiding having
+      the master be the chokepoint through which all those data flow.  If the 
+      webapp controls it, then the privilege will be restricted to those the
+      admins approve, in order to reduce load.
