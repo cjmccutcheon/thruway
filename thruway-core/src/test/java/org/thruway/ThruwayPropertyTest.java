@@ -53,52 +53,14 @@ public class ThruwayPropertyTest {
     }
     
     @Test
-    public void testValueIdentity() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
-        tp.setValue("bar");
-        assertEquals("Property value identity", "bar", tp.getValue());
-    }
-    
-    
-    @Test (expected = IllegalStateException.class)
-    public void testCannotResetValue() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
-        tp.setValue("bar");
-        tp.setValue("baz");
-    }
-    
-    @Test
-    public void testCannotInitialValueIsNull() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
-        assertNull("Initial property value is null", tp.getValue());
-    }
-    
-    @Test
     public void testHashString() {
         ThruwayProperty tp1 = new ThruwayProperty("foo");
         ThruwayProperty tp2 = new ThruwayProperty("foo", "bar");
-        ThruwayProperty tp3 = new ThruwayProperty("foo", "bar");
-        tp3.setValue("baz");
         String hash1 = tp1.hashString();
         String hash2 = tp2.hashString();
-        String hash3 = tp3.hashString();
         assertNotNull("Hash is not null: 1", hash1);
         assertNotNull("Hash is not null: 2", hash2);
-        assertNotNull("Hash is not null: 3", hash3);
-        assertFalse("Hashes are all different: 1, 2", hash1.equals(hash2));
-        assertFalse("Hashes are all different: 2, 3", hash2.equals(hash3));
-        assertFalse("Hashes are all different: 1, 3", hash1.equals(hash3));
-    }
-    
-    @Test
-    public void testHashStringChangesWithValue() {
-        ThruwayProperty tp1 = new ThruwayProperty("foo");
-        String hash1 = tp1.hashString();
-        tp1.setValue("baz");
-        String hash2 = tp1.hashString();
-        assertNotNull("Hash is not null: 1", hash1);
-        assertNotNull("Hash is not null: 2", hash2);
-        assertFalse("Hashes are different", hash1.equals(hash2));
+        assertFalse("Hashes are different: 1, 2", hash1.equals(hash2));
     }
     
     @Test
@@ -107,19 +69,12 @@ public class ThruwayPropertyTest {
         ThruwayProperty tp1b = new ThruwayProperty("foo");
         ThruwayProperty tp2a = new ThruwayProperty("foo", "bar");
         ThruwayProperty tp2b = new ThruwayProperty("foo", "bar");
-        ThruwayProperty tp3a = new ThruwayProperty("foo", "bar");
-        ThruwayProperty tp3b = new ThruwayProperty("foo", "bar");
-        tp3a.setValue("baz");
-        tp3b.setValue("baz");
         String hash1a = tp1a.hashString();
         String hash2a = tp2a.hashString();
-        String hash3a = tp3a.hashString();
         String hash1b = tp1b.hashString();
         String hash2b = tp2b.hashString();
-        String hash3b = tp3b.hashString();
         assertTrue("Hashes are consistent: 1", hash1a.equals(hash1b));
         assertTrue("Hashes are consistent: 2", hash2a.equals(hash2b));
-        assertTrue("Hashes are consistent: 3", hash3a.equals(hash3b));
     }
 
 }

@@ -25,12 +25,15 @@ SOFTWARE.
 package org.thruway;
 
 /**
- * This class is almost your basic key/value pair, except that there is the
- * ability for the user to choose a "user" key, which can then be used
- * by all downstream nodes, while simultaneously the system has chosen
- * a hardcoded "origin" key, which the node then uses to keep track of which
- * field is which.  This allows the user to choose appropriate names for
+ * This defines a Property for Thruway, which almost your basic key/value pair, 
+ * except that there is the ability for the user to choose a "user" key, which 
+ * can then be used by all downstream nodes, while simultaneously the system has
+ * chosen a hardcoded "origin" key, which the node then uses to keep track of 
+ * which field is which.  This allows the user to choose appropriate names for 
  * different outputs and inputs, when, for example, TODO add example.
+ * 
+ * Values are stored by instantiating a {@link ThruwayPropertyValue} and
+ * using an instance of this class to define the field.
  *
  */
 public class ThruwayProperty implements Hashable
@@ -57,9 +60,6 @@ public class ThruwayProperty implements Hashable
 
     /** Key for inter-node use. Can equal originKey */
     final private String userKey;
-
-    /** Value of the property.  Once set, cannot be changed. */
-    private String value = null;
 
     ThruwayProperty (String originKey, String userKey)
     {
@@ -104,29 +104,19 @@ public class ThruwayProperty implements Hashable
         return this.userKey;
     }
 
-    void setValue(String newValue)
-    {
-        if (this.value != null)
-        {
-            throw new IllegalStateException("Value already set");
-        }
-        this.value = newValue;
-    }
-
     public String hashString()
     {
-        // All 3 have to be included.  originKey, userKey, and value
-        return ThruwayCommon.hashValue(originKey, userKey, value);
-    }
-
-    String getValue()
-    {
-        return this.value;
+        // Both originKey and userKey have to be included. Always.
+        return ThruwayCommon.hashValue(new Object [] {originKey, userKey});
     }
 
     public String toString() 
     {
-        return "Prop(" + originKey + "|" + userKey + "=" + value + ")";
+        if (originKey == userKey)
+        {
+            return "PropDef(" + originKey + ")";
+        }
+        return "PropDef(" + originKey + "," + userKey + ")";
     }
 
 }
