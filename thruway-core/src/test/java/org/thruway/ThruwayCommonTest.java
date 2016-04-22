@@ -50,15 +50,13 @@ public class ThruwayCommonTest {
         assertTrue("Hashes are always hexadecimal", hash.matches("^[0-9a-f]+$"));
     }
 
-    @Test (expected = NullPointerException.class)
-    public void testHashValue_NullArgument() {
-        ThruwayCommon.hashValue((Object) null);
-    }
-
     @Test
     public void testHashValue_ArrayAndCollectionEquality() {
-        String hash1 = ThruwayCommon.hashValue("a", "b");
-        String hash2 = ThruwayCommon.hashValue(new String [] {"a", "b"} );
+        ArrayList<Object> list = new ArrayList<Object>();
+        list.add("a");
+        list.add("b");
+        String hash1 = ThruwayCommon.hashValue(list);
+        String hash2 = ThruwayCommon.hashValue(new Object [] {"a", "b"} );
         assertNotNull("Extant arguments get extant results", hash1);
         assertNotNull("Extant arguments get extant results", hash2);
         assertTrue("Collection method and Array method" +

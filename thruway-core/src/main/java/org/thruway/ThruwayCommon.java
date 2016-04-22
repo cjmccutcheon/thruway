@@ -32,51 +32,42 @@ public class ThruwayCommon {
     {
         return org.apache.commons.codec.digest.DigestUtils.md5Hex(sb.toString());
     }
-
-    static public String hashValue(Collection<String> strings) {
-        StringBuilder builder = new StringBuilder();
-        for (String s : strings)
+    
+    static private void hashValueBuildDigest(StringBuilder builder, Object o)
+    {
+        if (o == null)
         {
-            if (s == null)
-            {
-                builder.append('\u0001');
-            }
-            else
-            {
-                builder.append(s);
-            }
-            builder.append('\u0000');
+            builder.append('\u0002');
         }
-        return hashValueImpl(builder);
-    }
-
-    static public String hashValue(String ... strings) {
-        StringBuilder builder = new StringBuilder();
-        for (String s : strings)
+        else if (o instanceof Hashable)
         {
-            if (s == null)
-            {
-                builder.append('\u0001');
-            }
-            else
-            {
-                builder.append(s);
-            }
-            builder.append('\u0000');
+            builder.append(((Hashable) o).hashString());
         }
-        return hashValueImpl(builder);
-    }
-
-    static public String hashValue(String s) {
-        org.apache.commons.codec.digest.DigestUtils.md5Hex(s);
-        StringBuilder builder = new StringBuilder();
-        builder.append(s);
+        else
+        {
+            builder.append(o.toString());
+        }
         builder.append('\u0000');
-        return hashValueImpl(builder);
+        builder.append('\u0001');
+        
     }
 
-    static public String hashValue(Object o) {
-        return hashValue(o.toString());
+    static public String hashValue(Collection<?> objects) {
+        StringBuilder builder = new StringBuilder();
+        for (Object o : objects)
+        {
+            hashValueBuildDigest(builder, o);
+        }
+        return hashValueImpl(builder);
+    }
+    
+    static public String hashValue(Object ... objects) {
+        StringBuilder builder = new StringBuilder();
+        for (Object o : objects)
+        {
+            hashValueBuildDigest(builder, o);
+        }
+        return hashValueImpl(builder);
     }
 
 }
