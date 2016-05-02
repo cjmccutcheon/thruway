@@ -124,6 +124,7 @@ public class BulkBlockingServiceTest
         {
         }
         
+        // Account for clock fuzziness.  On windows, can be coarse by 16ms.
         assertTrue("First package thread done earlier", 
             run1.millisFinished + (delay - 20) <= run2.millisFinished);
         assertTrue("Second package threads released close to each other: 2,3",
