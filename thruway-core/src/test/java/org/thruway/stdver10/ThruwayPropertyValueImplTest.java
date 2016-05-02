@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.thruway;
+package org.thruway.stdver10;
 
 import java.util.ArrayList;
 
@@ -33,45 +33,53 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-public class ThruwayPropertyValueTest {
+import org.thruway.*;
+
+public class ThruwayPropertyValueImplTest 
+{
 
     @Test
-    public void testValueIdentity() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
-        ThruwayPropertyValue tpv = new ThruwayPropertyValue(tp);
+    public void testValueIdentity() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, "foo");
+        ThruwayPropertyValueImpl tpv = new ThruwayPropertyValueImpl(tp);
         tpv.setValue("bar");
         assertEquals("Property value identity", "bar", tpv.getValue());
     }
     
     
-    @Test (expected = IllegalStateException.class)
-    public void testCannotResetValue() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
-        ThruwayPropertyValue tpv = new ThruwayPropertyValue(tp);
+    @Test (expected = ThruwaySystemException.class)
+    public void testCannotResetValue() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, "foo");
+        ThruwayPropertyValueImpl tpv = new ThruwayPropertyValueImpl(tp);
         tpv.setValue("bar");
         tpv.setValue("baz");
     }
     
     @Test
-    public void testCannotInitialValueIsNull() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
-        ThruwayPropertyValue tpv = new ThruwayPropertyValue(tp);
+    public void testCannotInitialValueIsNull() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, "foo");
+        ThruwayPropertyValueImpl tpv = new ThruwayPropertyValueImpl(tp);
         assertNull("Initial property value is null", tpv.getValue());
     }
     
     @Test
-    public void testHashString() {
-        ThruwayProperty tp = new ThruwayProperty("foo", "bar");
-        ThruwayPropertyValue tpv = new ThruwayPropertyValue(tp);
+    public void testHashString() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, "foo", "bar");
+        ThruwayPropertyValueImpl tpv = new ThruwayPropertyValueImpl(tp);
         tpv.setValue("baz");
         String hash = tpv.hashString();
         assertNotNull("Hash is not null", hash);
     }
     
     @Test
-    public void testHashStringChangesWithValue() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
-        ThruwayPropertyValue tpv = new ThruwayPropertyValue(tp);
+    public void testHashStringChangesWithValue() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, "foo");
+        ThruwayPropertyValueImpl tpv = new ThruwayPropertyValueImpl(tp);
         String hash1 = tpv.hashString();
         tpv.setValue("baz");
         String hash2 = tpv.hashString();
@@ -81,14 +89,15 @@ public class ThruwayPropertyValueTest {
     }
     
     @Test
-    public void testHashStringConsistency() {
-        ThruwayProperty tp1 = new ThruwayProperty("foo", "bar");
-        ThruwayProperty tp2 = new ThruwayProperty("foo", "bar");
-        // Different ThruwayProperty in 1
-        ThruwayPropertyValue tpv1 = new ThruwayPropertyValue(tp1);
-        // Same ThruwayProperty in 2 and 3
-        ThruwayPropertyValue tpv2 = new ThruwayPropertyValue(tp2);
-        ThruwayPropertyValue tpv3 = new ThruwayPropertyValue(tp2);
+    public void testHashStringConsistency() 
+    {
+        ThruwayPropertyImpl tp1 = new ThruwayPropertyImpl(null, "foo", "bar");
+        ThruwayPropertyImpl tp2 = new ThruwayPropertyImpl(null, "foo", "bar");
+        // Different ThruwayPropertyImpl in 1
+        ThruwayPropertyValueImpl tpv1 = new ThruwayPropertyValueImpl(tp1);
+        // Same ThruwayPropertyImpl in 2 and 3
+        ThruwayPropertyValueImpl tpv2 = new ThruwayPropertyValueImpl(tp2);
+        ThruwayPropertyValueImpl tpv3 = new ThruwayPropertyValueImpl(tp2);
         tpv1.setValue("baz");
         tpv2.setValue("baz");
         tpv3.setValue("baz");

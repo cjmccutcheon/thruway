@@ -25,34 +25,40 @@ SOFTWARE.
 package org.thruway;
 
 /**
- * Class used to specify a property that is filled with a value.
- * The {@link ThruwayProperty} class is used as a static field
- * definition.
+ * Execption reflecting situations where the user likely made an error
+ * during operation, and the situation needs to be handled gracefully and
+ * explained to the user.  It is not required that user error be handled via
+ * throwing this Exception.
  */
-public interface ThruwayPropertyValue extends Hashable
-{
+public class ThruwayUserException extends RuntimeException
+{  
+    final String userExplanation;
+   
+    public ThruwayUserException(String exceptionMessage, 
+                                String userExplanation)
+    {
+        super(exceptionMessage);
+        if (userExplanation == null)
+        {
+            // TODO: log ERROR message
+        }
+        this.userExplanation = userExplanation;
+    }
     
-    /**
-     * @param newValue
-     *     The value to set to this instance
-     * @throws ThruwaySystemException 
-     *     if the value has already been set
-     */
-    public void setValue(String newValue);
+    public ThruwayUserException(String exceptionMessage, 
+                                String userExplanation, 
+                                Exception cause)
+    {
+        super(exceptionMessage, cause);
+        if (userExplanation == null)
+        {
+            // TODO: log ERROR message
+        }
+        this.userExplanation = userExplanation;
+    }
     
-    /**
-     * @return
-     *     The value set via {@link #setValue()},
-     *     or <code>null</code> if no value
-     *     has been set
-     */
-    public String getValue();
-
-    /**
-     * @return
-     *     A {@link ThruwayProperty} instance
-     *     that describes the property structure.
-     */
-    public ThruwayProperty getThruwayProperty();
+    public String getUserExplanation()
+    {
+        return userExplanation;
+    }
 }
-

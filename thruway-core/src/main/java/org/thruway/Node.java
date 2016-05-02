@@ -1,4 +1,4 @@
-<!--
+/*
 The MIT License (MIT)
 
 Copyright (c) 2016 Christopher James McCutcheon (github user: cjmccutcheon)
@@ -20,38 +20,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
+*/
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.thruway</groupId>
-  <artifactId>thruway-core</artifactId>
-  <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
-  <name>thruway-core</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.10</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.apache.commons</groupId>
-    	<artifactId>commons-collections4</artifactId>
-    	<version>4.1</version>
-    </dependency>
-    <dependency>
-    	<groupId>joda-time</groupId>
-    	<artifactId>joda-time</artifactId>
-    	<version>2.9.3</version>
-    </dependency>
-  </dependencies>
-</project>
+package org.thruway;
+
+import org.joda.time.ReadableDateTime;
+
+/**
+ * Common interface for Ingress, Transform, and Egress
+ */
+public interface Node {  
+    
+    /**
+     * @return the last time this Node's execute()
+     *     method was called.  Preferrably the 
+     *     starting time.
+     */
+    ReadableDateTime lastExecuted();
+    
+    /**
+     * Process the Node's functionality
+     * @return always {@link NodeEvaluation}, 
+     * never <code>null</code>
+     */
+    NodeEvaluation evaluate();
+    
+    /**
+     * @return the Pattern that is the cause
+     *     of this Node's existence
+     */
+    Pattern ownedBy();
+    
+}

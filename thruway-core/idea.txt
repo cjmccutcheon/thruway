@@ -214,8 +214,8 @@ Internal Mechanics:
               in information.  
     Visibility Fields: These fields control various aspects of information flow
         between Patterns, the master, and non-admins.  They are:
-        PUBLISHED, Pattern-level, preset, boolean: Sets whether the Engine Loop
-            Can see the Pattern nodes for evaluation. Default "false".
+        PUBLISHED, Pattern-level, preset, boolean: Sets whether the Node 
+            Dispatch can see the Pattern nodes for evaluation. Default "false".
         HIDDEN, Pattern-level, preset, boolean: Controls whether Users can see
             this in a casual context. Note: since Patterns are never destroyed,
             and cloned/edited Patterns keep a reference to the Pattern they
@@ -277,11 +277,14 @@ Internal Mechanics:
       available for developers to use when referring to misbehavior in the
       system (say, when the description fields are badly defined).
   
-  Engine Loop:
+  Node Dispatch:
       The driver of the system will be a loop in these parts:
         Evaluate Ingresses: Ingresses evaluate and publish 0 or more tokens
         Evaluate Transforms: In order of the Transform Priority List, allow
             downstream Transforms to consume tokens from Ingresses.
+        Bypass Nodes: Tokens that are marked with an Execution State that
+            specifies bypassing Ingresses and Transforms should be forwarded
+            past those downstream Nodes.
         Run satisfied transforms: Transforms with their required tokens
             are allowed to run.
         Record newly completed Transforms: Transforms who have recently finished

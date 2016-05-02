@@ -22,37 +22,61 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.thruway;
+package org.thruway.stdver10;
+
+import org.thruway.ThruwayCommon;
+import org.thruway.ThruwayProperty;
+import org.thruway.ThruwaySystemException;
 
 /**
  * Class used to specify a property that is filled with a value.
  * The {@link ThruwayProperty} class is used as a static field
  * definition.
  */
-public interface ThruwayPropertyValue extends Hashable
+public class ThruwayPropertyValueImpl
 {
     
-    /**
-     * @param newValue
-     *     The value to set to this instance
-     * @throws ThruwaySystemException 
-     *     if the value has already been set
-     */
-    public void setValue(String newValue);
+    private ThruwayProperty thruwayProperty;
     
-    /**
-     * @return
-     *     The value set via {@link #setValue()},
-     *     or <code>null</code> if no value
-     *     has been set
-     */
-    public String getValue();
+    private String value = null;
 
-    /**
-     * @return
-     *     A {@link ThruwayProperty} instance
-     *     that describes the property structure.
-     */
-    public ThruwayProperty getThruwayProperty();
+    ThruwayPropertyValueImpl(ThruwayProperty thruwayProperty)
+    {
+        if (thruwayProperty == null) 
+        {
+            throw new ThruwaySystemException("definition cannot be null");
+        }
+        this.thruwayProperty = thruwayProperty;
+    }
+
+    void setValue(String newValue)
+    {
+        if (this.value != null)
+        {
+            throw new ThruwaySystemException("Value already set");
+        }
+        this.value = newValue;
+    }
+
+    public String hashString()
+    {
+        // All 3 have to be included.  originKey, userKey, and value
+        return ThruwayCommon.hashValue(thruwayProperty, value);
+    }
+    
+    public ThruwayProperty getThruwayProperty()
+    {
+        return thruwayProperty;
+    }
+
+    public String getValue()
+    {
+        return this.value;
+    }
+
+    public String toString() 
+    {
+        return "PropVal(" + thruwayProperty + ", " + value + ")";
+    }
 }
 

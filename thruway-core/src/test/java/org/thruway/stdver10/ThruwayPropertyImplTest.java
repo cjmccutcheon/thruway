@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.thruway;
+package org.thruway.stdver10;
 
 import java.util.ArrayList;
 
@@ -33,29 +33,34 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-public class ThruwayPropertyTest {
+public class ThruwayPropertyImplTest 
+{
 
     @Test (expected = IllegalArgumentException.class)
-    public void testNullOriginKey() {
-        ThruwayProperty tp = new ThruwayProperty(null, "foo");
+    public void testNullOriginKey() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, null, "foo");
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testNullUserKey() {
-        ThruwayProperty tp = new ThruwayProperty("foo", null);
+    public void testNullUserKey() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, "foo", null);
     }
     
     @Test
-    public void testNoUserKey() {
-        ThruwayProperty tp = new ThruwayProperty("foo");
+    public void testNoUserKey() 
+    {
+        ThruwayPropertyImpl tp = new ThruwayPropertyImpl(null, "foo");
         assertEquals("Origin Key identity", "foo", tp.getOriginKey());
         assertEquals("User Key identity", "foo", tp.getUserKey());
     }
     
     @Test
-    public void testHashString() {
-        ThruwayProperty tp1 = new ThruwayProperty("foo");
-        ThruwayProperty tp2 = new ThruwayProperty("foo", "bar");
+    public void testHashString() 
+    {
+        ThruwayPropertyImpl tp1 = new ThruwayPropertyImpl(null, "foo");
+        ThruwayPropertyImpl tp2 = new ThruwayPropertyImpl(null, "foo", "bar");
         String hash1 = tp1.hashString();
         String hash2 = tp2.hashString();
         assertNotNull("Hash is not null: 1", hash1);
@@ -64,11 +69,12 @@ public class ThruwayPropertyTest {
     }
     
     @Test
-    public void testHashStringConsistency() {
-        ThruwayProperty tp1a = new ThruwayProperty("foo");
-        ThruwayProperty tp1b = new ThruwayProperty("foo");
-        ThruwayProperty tp2a = new ThruwayProperty("foo", "bar");
-        ThruwayProperty tp2b = new ThruwayProperty("foo", "bar");
+    public void testHashStringConsistency() 
+    {
+        ThruwayPropertyImpl tp1a = new ThruwayPropertyImpl(null, "foo");
+        ThruwayPropertyImpl tp1b = new ThruwayPropertyImpl(null, "foo");
+        ThruwayPropertyImpl tp2a = new ThruwayPropertyImpl(null, "foo", "bar");
+        ThruwayPropertyImpl tp2b = new ThruwayPropertyImpl(null, "foo", "bar");
         String hash1a = tp1a.hashString();
         String hash2a = tp2a.hashString();
         String hash1b = tp1b.hashString();

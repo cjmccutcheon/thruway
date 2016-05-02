@@ -125,7 +125,7 @@ public class BulkBlockingServiceTest
         }
         
         assertTrue("First package thread done earlier", 
-            run1.millisFinished + delay <= run2.millisFinished);
+            run1.millisFinished + (delay - 20) <= run2.millisFinished);
         assertTrue("Second package threads released close to each other: 2,3",
             Math.abs(run2.millisFinished - run3.millisFinished) < 20);
         assertTrue("Second package threads released close to each other: 2,4",

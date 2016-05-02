@@ -36,7 +36,7 @@ package org.thruway;
  * using an instance of this class to define the field.
  *
  */
-public class ThruwayProperty implements Hashable
+public interface ThruwayProperty extends Hashable
 {
     
     /**
@@ -54,70 +54,9 @@ public class ThruwayProperty implements Hashable
     //    [${}]      -- Because of "${foo}" interpolation notation
     static final public String ALLOWED_KEY_REGEX = "[A-Za-z0-9_]*";
 
+    public String getOriginKey();
 
-    /** Key for internal-use only */
-    final private String originKey;
-
-    /** Key for inter-node use. Can equal originKey */
-    final private String userKey;
-
-    ThruwayProperty (String originKey, String userKey)
-    {
-        if (originKey == null) 
-        {
-            throw new IllegalArgumentException("originKey cannot be null");
-        }
-        if (!originKey.matches(ALLOWED_KEY_REGEX))
-        {
-            throw new RuntimeException("originKey does not match necessary " +
-                "regex: " + ALLOWED_KEY_REGEX);
-        }
-        this.originKey = originKey;
-
-        if (originKey != userKey)
-        {
-            if (userKey == null) 
-            {
-                throw new IllegalArgumentException("userKey cannot be null");
-            }
-            if (!userKey.matches(ALLOWED_KEY_REGEX))
-            {
-                throw new RuntimeException("userKey does not match necessary " +
-                    "regex: " + ALLOWED_KEY_REGEX);
-            }
-        }
-        this.userKey = userKey;
-    }
-
-    ThruwayProperty (String originKey)
-    {
-        this(originKey, originKey);
-    }
-
-    String getOriginKey()
-    {
-        return this.originKey;
-    }
-
-    String getUserKey()
-    {
-        return this.userKey;
-    }
-
-    public String hashString()
-    {
-        // Both originKey and userKey have to be included. Always.
-        return ThruwayCommon.hashValue(new Object [] {originKey, userKey});
-    }
-
-    public String toString() 
-    {
-        if (originKey == userKey)
-        {
-            return "PropDef(" + originKey + ")";
-        }
-        return "PropDef(" + originKey + "," + userKey + ")";
-    }
+    public String getUserKey();
 
 }
 
