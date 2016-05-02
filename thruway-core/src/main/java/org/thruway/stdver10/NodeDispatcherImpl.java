@@ -24,12 +24,20 @@ SOFTWARE.
 
 package org.thruway.stdver10;
 
+import java.util.HashMap;
+
 import org.thruway.*;
 import org.apache.commons.collections4.list.CursorableLinkedList;
 import org.apache.commons.collections4.list.CursorableLinkedList.Cursor;
 
 public class NodeDispatcherImpl implements NodeDispatcher
 {
+    
+    /**
+     * Pattern registered via {@link #addPattern(Pattern)}.
+     */
+    private HashMap<String, Pattern> registeredPatternsByHashString =
+        new HashMap<String, Pattern>();
     
     /**
      * The list of Nodes watched by the dispatcher, in ascending order
@@ -43,6 +51,9 @@ public class NodeDispatcherImpl implements NodeDispatcher
         new CursorableLinkedList<Node>();
         
         
+    /**
+     * @inheritDoc
+     */
     public void evaluateAllNodes() 
     {
         Node lastEvalNode = nodesOrderedByLastExecuted.getLast();
@@ -59,5 +70,35 @@ public class NodeDispatcherImpl implements NodeDispatcher
             
         } while (evalNode != lastEvalNode);
         
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public boolean addPattern(Pattern newPattern)
+    {
+        String patternHash = newPattern.hashString();
+        boolean added = false;
+        if (!registeredPatternsByHashString.containsKey(patternHash))
+        {
+            registeredPatternsByHashString.put(patternHash, newPattern);
+            added = true;
+        }
+        return added;
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public boolean removePattern(Pattern newPattern)
+    {
+        String patternHash = newPattern.hashString();
+        boolean removed = false;
+        if (registeredPatternsByHashString.containsKey(patternHash))
+        {
+            registeredPatternsByHashString.remove(patternHash);
+            removed = true;
+        }
+        return removed;
     }
 }

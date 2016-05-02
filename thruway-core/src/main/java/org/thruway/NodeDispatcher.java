@@ -28,7 +28,7 @@ import org.apache.commons.collections4.list.CursorableLinkedList;
 
 /**
  * Interface for the module that controls the activity of Nodes
- * in a Pattern
+ * in a Pattern.
  */
 public interface NodeDispatcher
 {
@@ -39,4 +39,24 @@ public interface NodeDispatcher
      */
     public void evaluateAllNodes();
     
+    /**
+     * Makes the NodeDispatcher responsible for dispatching the nodes
+     * in a Pattern.  The Pattern is identifiable by its hash.
+     * 
+     * @returns <code>true</code> if the Pattern is actually added.
+     *     Returns <code>false</code> if the Pattern is already
+     *     active in the NodeDispatcher.
+     */
+    public boolean addPattern(Pattern newPattern);
+    
+    /**
+     * If the NodeDispatcher is responsible for dispatching the nodes in a 
+     * Pattern, removes that responsibility.  The Pattern is identifiable by
+     * its hash.
+     * 
+     * @returns <code>true</code> if the Pattern is actually removed.
+     *     Returns <code>false</code> if the Pattern is not
+     *     active in the NodeDispatcher.
+     */
+    public boolean removePattern(Pattern newPattern);
 }

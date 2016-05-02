@@ -28,7 +28,7 @@ package org.thruway;
  * A collection of Nodes that are actively dispatched by the NodeDispatcher,
  * causing Executions (and thus Permutations) to be created.
  */
-public interface Pattern {
+public interface Pattern extends Hashable {
 
 // TODO
 
