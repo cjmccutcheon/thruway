@@ -27,28 +27,10 @@ package org.thruway;
 import org.joda.time.ReadableDateTime;
 
 /**
- * Common interface for Ingress, Transform, and Egress
+ * Service that handles the loading and saving of Pattern configurations.
  */
-public interface Node {  
+public interface PatternManager {  
     
-    /**
-     * @return the last time this Node's execute()
-     *     method was called.  Preferrably the 
-     *     starting time. If never executed, {@code null}.
-     */
-    ReadableDateTime lastExecuted();
     
-    /**
-     * Process the Node's functionality
-     * @return always {@link NodeEvaluation}, 
-     * never <code>null</code>
-     */
-    NodeEvaluation evaluate();
-    
-    /**
-     * @return the Pattern that is the cause
-     *     of this Node's existence
-     */
-    Pattern ownedBy();
     
 }

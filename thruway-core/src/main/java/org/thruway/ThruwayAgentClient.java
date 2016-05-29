@@ -24,31 +24,26 @@ SOFTWARE.
 
 package org.thruway;
 
-import org.joda.time.ReadableDateTime;
-
 /**
- * Common interface for Ingress, Transform, and Egress
+ * Interface for the client side of a Thruway Agent.
+ * An agent is any service that can be responsible for
+ * executing Node work.  The master may or may not
+ * configure an agent.
  */
-public interface Node {  
+public interface ThruwayAgentClient
+{
     
     /**
-     * @return the last time this Node's execute()
-     *     method was called.  Preferrably the 
-     *     starting time. If never executed, {@code null}.
+     * Relay the given node to the Service for immediate Execution.
+     * If the Node is already cached on the server side, there
+     * is no need to send the whole Node instance.
      */
-    ReadableDateTime lastExecuted();
+    void submitNodeForImmediateExecution(Node node) 
+            throws ThruwayServiceException;
     
     /**
-     * Process the Node's functionality
-     * @return always {@link NodeEvaluation}, 
-     * never <code>null</code>
+     * Relay the given node to the Service for caching
      */
-    NodeEvaluation evaluate();
-    
-    /**
-     * @return the Pattern that is the cause
-     *     of this Node's existence
-     */
-    Pattern ownedBy();
-    
+    void submitNodeToCache(Node node)
+            throws ThruwayServiceException;
 }

@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.thruway.stdver10;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.thruway.*;
@@ -50,7 +51,20 @@ public class NodeDispatcherImpl implements NodeDispatcher
     private CursorableLinkedList<Node> nodesOrderedByLastExecuted = 
         new CursorableLinkedList<Node>();
         
+    /**
+     * List of registered listeners
+     */
+    private ArrayList<NodeDispatcherListener> listeners = 
+        new ArrayList<NodeDispatcherListener>();
         
+    /**
+     * Bean-friendly constructor.  This is a safe constructor for
+     * normal use.
+     */
+    public NodeDispatcherImpl()
+    {
+    }
+    
     /**
      * @inheritDoc
      */
@@ -62,7 +76,7 @@ public class NodeDispatcherImpl implements NodeDispatcher
         do {
             evalNode = cursor.next();
             NodeEvaluation evalReturn = evalNode.evaluate();
-            if (evalReturn.nodeExecuted())
+            if (evalReturn.nodeExecutionComplete())
             {
                 cursor.remove();
                 nodesOrderedByLastExecuted.add(evalNode);

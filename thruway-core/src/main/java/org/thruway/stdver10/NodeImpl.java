@@ -22,33 +22,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.thruway;
+package org.thruway.stdver10;
+
+import java.util.HashSet;
 
 import org.joda.time.ReadableDateTime;
 
+import org.thruway.Node;
+import org.thruway.NodeEvaluation;
+import org.thruway.Pattern;
+
 /**
- * Common interface for Ingress, Transform, and Egress
+ * Standard implementation for Node, v1.0
  */
-public interface Node {  
+abstract public class NodeImpl implements Node {  
     
     /**
-     * @return the last time this Node's execute()
-     *     method was called.  Preferrably the 
-     *     starting time. If never executed, {@code null}.
+     * Pattern this node belongs to.
      */
-    ReadableDateTime lastExecuted();
+    Pattern ownedBy = null;
     
     /**
-     * Process the Node's functionality
-     * @return always {@link NodeEvaluation}, 
-     * never <code>null</code>
+     * List of Nodes that this Node considers its parents.
      */
-    NodeEvaluation evaluate();
+    HashSet<Node> immediateParentNodes = new HashSet<Node>();
     
-    /**
-     * @return the Pattern that is the cause
-     *     of this Node's existence
-     */
-    Pattern ownedBy();
+    ReadableDateTime lastDefined = null;
+    ReadableDateTime lastExecuted = null;
+    
+    public NodeImpl(Pattern ownedBy)
+    {
+        this.ownedBy = ownedBy;
+    }
+    
+    /** @inheritDoc */
+    public ReadableDateTime lastExecuted()
+    {
+        return lastExecuted;
+    }
+    
+    /** @inheritDoc */
+    public abstract NodeEvaluation evaluate();
+    
+    /** @inheritDoc */
+    public Pattern ownedBy()
+    {
+        return ownedBy;
+    }
     
 }

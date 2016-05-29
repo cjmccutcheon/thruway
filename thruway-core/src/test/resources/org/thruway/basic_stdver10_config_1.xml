@@ -1,0 +1,14 @@
+<!-- ThruwayBootstrapper reads the class of ThruwayDigester, the
+     loaded ThruwayDigester reads everything else -->
+<ThruwayDigester class="org.thruway.stdver10.ThruwayDigesterImpl">
+    <ThruwayHost id="Master" class="org.thruway.stdver10.ThruwayHostImpl"/>
+        <ThruwayService id="MasterPL" class="org.thruway.stdver10.PatternLoaderImpl"/>
+            <ReadDirectory pathname="./src/test/resources/org/thruway"> 
+        </ThruwayService>
+        <ThruwayService 
+            class="org.thruway.stdver10.NodeDispatcherImpl"
+            id="MasterND" 
+            patternLoaderRef="MasterPL"/>
+        </ThruwayService>
+    </ThruwayHost>
+</ThruwayDigester>

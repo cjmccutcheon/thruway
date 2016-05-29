@@ -28,7 +28,7 @@ package org.thruway;
  * Simple class responsible for getting the Digester Configuration XML
  * to it's relevant parser, based on the information in the XML document.
  */
-public class ThruwayBootstrap
+public class ThruwayBootstrapper
 {
     
 }

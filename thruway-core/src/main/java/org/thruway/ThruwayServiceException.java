@@ -24,31 +24,23 @@ SOFTWARE.
 
 package org.thruway;
 
-import org.joda.time.ReadableDateTime;
-
 /**
- * Common interface for Ingress, Transform, and Egress
+ * Execption reflecting situations where coordinating work on a service
+ * did not go as planned, perhaps from network/IO failure.
+ * The execption represents a reasonable exception, and thus needs to be
+ * handled just like an IOException
  */
-public interface Node {  
+public class ThruwayServiceException extends Exception
+{  
+   
+    public ThruwayServiceException(String message)
+    {
+        super(message);
+    }
     
-    /**
-     * @return the last time this Node's execute()
-     *     method was called.  Preferrably the 
-     *     starting time. If never executed, {@code null}.
-     */
-    ReadableDateTime lastExecuted();
-    
-    /**
-     * Process the Node's functionality
-     * @return always {@link NodeEvaluation}, 
-     * never <code>null</code>
-     */
-    NodeEvaluation evaluate();
-    
-    /**
-     * @return the Pattern that is the cause
-     *     of this Node's existence
-     */
-    Pattern ownedBy();
+    public ThruwayServiceException(String message, Exception cause)
+    {
+        super(message, cause);
+    }
     
 }

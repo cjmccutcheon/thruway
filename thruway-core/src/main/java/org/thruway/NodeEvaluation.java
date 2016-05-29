@@ -37,7 +37,11 @@ public interface NodeEvaluation {
      * be moved to the end of the order list
      * in the NodeDispatcher
      */
-    boolean nodeExecuted();
+    boolean nodeEvaluationComplete();
     
     
+    /**
+     * @return the {@link Node} instance that this instance pertains to.
+     */
+    Node nodeUnderEvaluation();
 }
