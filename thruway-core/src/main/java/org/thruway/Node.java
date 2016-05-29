@@ -32,14 +32,20 @@ import org.joda.time.ReadableDateTime;
 public interface Node {  
     
     /**
-     * @return the last time this Node's execute()
-     *     method was called.  Preferrably the 
-     *     starting time. If never executed, {@code null}.
+     * @return the last time that the user defined this
+     *     Node's contents.
      */
-    ReadableDateTime lastExecuted();
+    ReadableDateTime lastDefined();
     
     /**
-     * Process the Node's functionality
+     * @return the last time this Node's evaluate()
+     *     method was called.  Preferrably the 
+     *     starting time. If never evaluated, {@code null}.
+     */
+    ReadableDateTime lastEvaluated();
+    
+    /**
+     * Process the Node's functionality.
      * @return always {@link NodeEvaluation}, 
      * never <code>null</code>
      */

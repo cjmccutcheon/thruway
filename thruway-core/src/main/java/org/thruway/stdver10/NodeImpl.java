@@ -56,6 +56,12 @@ abstract public class NodeImpl implements Node {
     }
     
     /** @inheritDoc */
+    public ReadableDateTime lastDefined()
+    {
+        return lastDefined;
+    }
+    
+    /** @inheritDoc */
     public ReadableDateTime lastExecuted()
     {
         return lastExecuted;
